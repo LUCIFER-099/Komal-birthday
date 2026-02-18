@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kothari's Developers - Activity Tracker</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+    text-align: center;
+}
+
+header {
+    background: #020617;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    background: #2563eb;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.brand {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.container {
+    margin-top: 60px;
+}
+
+.timer {
+    font-size: 50px;
+    margin: 20px 0;
+}
+
+.status {
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+button {
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.active-btn {
+    background: #22c55e;
+    color: black;
+}
+
+.away-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.reset-btn {
+    background: #64748b;
+    color: white;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #020617;
+    padding: 10px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">KD</div>
+    <div class="brand">Kothari's Developers</div>
+</header>
+
+<div class="container">
+
+    <h1>Activity Time Tracker</h1>
+
+    <div class="status" id="status">
+        Status: Away 🔴
+    </div>
+
+    <div class="timer" id="timer">
+        00:00:00
+    </div>
+
+    <button class="active-btn" onclick="setActive()">Active</button>
+    <button class="away-btn" onclick="setAway()">Away</button>
+    <button class="reset-btn" onclick="resetTime()">Reset</button>
+
+</div>
+
+<footer>
+    © 2026 Kothari's Developers | Productivity System
+</footer>
+
+<script>
+
+let isActive = false;
+let seconds = localStorage.getItem("activeTime")
+    ? parseInt(localStorage.getItem("activeTime"))
+    : 0;
+
+const timerEl = document.getElementById("timer");
+const statusEl = document.getElementById("status");
+
+/* Format time */
+function formatTime(sec) {
+
+    let h = Math.floor(sec / 3600);
+    let m = Math.floor((sec % 3600) / 60);
+    let s = sec % 60;
+
+    return (
+        String(h).padStart(2, "0") + ":" +
+        String(m).padStart(2, "0") + ":" +
+        String(s).padStart(2, "0")
+    );
+}
+
+/* Update display */
+function updateDisplay() {
+    timerEl.innerText = formatTime(seconds);
+}
+
+updateDisplay();
+
+/* Active mode */
+function setActive() {
+    isActive = true;
+    statusEl.innerHTML = "Status: Active 🟢";
+}
+
+/* Away mode */
+function setAway() {
+    isActive = false;
+    statusEl.innerHTML = "Status: Away 🔴";
+}
+
+/* Reset */
+function resetTime() {
+
+    if (confirm("Reset active time?")) {
+        seconds = 0;
+        localStorage.setItem("activeTime", 0);
+        updateDisplay();
+    }
+}
+
+/* Timer loop */
+setInterval(() => {
+
+    if (isActive) {
+        seconds++;
+        localStorage.setItem("activeTime", seconds);
+        updateDisplay();
+    }
+
+}, 1000);
+
+/* Auto-away when tab hidden */
+document.addEventListener("visibilitychange", () => {
+
+    if (document.hidden) {
+        setAway();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+
+\
